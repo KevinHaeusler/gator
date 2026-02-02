@@ -33,7 +33,9 @@ func Read() (Config, error) {
 	if err != nil {
 		return Config{}, err
 	}
-	defer jsonFile.Close()
+	defer func() {
+		_ = jsonFile.Close()
+	}()
 
 	byteValue, err := io.ReadAll(jsonFile)
 	if err != nil {

@@ -25,7 +25,10 @@ func main() {
 		fmt.Println(err)
 		os.Exit(1)
 	}
-	defer db.Close()
+	defer func() {
+		_ = db.Close()
+	}()
+
 	dbQueries := database.New(db)
 	stateGator := state{
 		db:  dbQueries,

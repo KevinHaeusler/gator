@@ -29,16 +29,15 @@ func handlerLogin(s *state, cmd command) error {
 		if errors.Is(err, sql.ErrNoRows) {
 			return fmt.Errorf("user does not exist")
 
-		} else {
-			return fmt.Errorf("error checking for existing user: %w", err)
 		}
-	} else {
-		err := s.cfg.SetUser(cmd.args[0])
-		if err != nil {
-			return fmt.Errorf("failed to set user: %w", err)
-		}
-		fmt.Printf("User %s has been set!", cmd.args[0])
+
+		return fmt.Errorf("error checking for existing user: %w", err)
 	}
+	err = s.cfg.SetUser(cmd.args[0])
+	if err != nil {
+		return fmt.Errorf("failed to set user: %w", err)
+	}
+	fmt.Printf("User %s has been set!", cmd.args[0])
 
 	return nil
 }
