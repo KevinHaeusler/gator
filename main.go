@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"log"
+	"os"
 
 	"github.com/KevinHaeusler/gator/internal/config"
 )
@@ -10,17 +10,32 @@ import (
 func main() {
 	cfg, err := config.Read()
 	if err != nil {
-		log.Fatalf("read config: %v", err)
+		fmt.Println(err)
+		os.Exit(1)
 	}
 
-	if err := cfg.SetUser("kevin"); err != nil {
-		log.Fatalf("set user: %v", err)
+	stateGator := state{
+		cfg: &cfg,
 	}
 
-	cfg2, err := config.Read()
-	if err != nil {
-		log.Fatalf("read config again: %v", err)
+	cmds := commands{
+		commandMap: make(map[string]func(*state, command) error),
 	}
 
-	fmt.Printf("%+v\n", cfg2)
+	cmds.register("login", handlerLogin)
+
+	if len(os.Args) < 2 {
+		fmt.Println("not enough arguments")
+		os.Exit(1)
+	}
+
+	cmd := command{
+		name: os.Args[1],
+		args: os.Args[2:],
+	}
+
+	if err := cmds.run(&stateGator, cmd); err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
 }
