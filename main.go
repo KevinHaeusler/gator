@@ -1,6 +1,12 @@
 package main
 
 import (
+	"database/sql"
+
+	"github.com/KevinHaeusler/gator/internal/database"
+	_ "github.com/lib/pq"
+)
+import (
 	"fmt"
 	"os"
 
@@ -14,7 +20,15 @@ func main() {
 		os.Exit(1)
 	}
 
+	db, err := sql.Open("postgres", cfg.DbURL)
+	if err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
+	defer db.Close()
+	dbQueries := database.New(db)
 	stateGator := state{
+		db:  dbQueries,
 		cfg: &cfg,
 	}
 
@@ -23,6 +37,7 @@ func main() {
 	}
 
 	cmds.register("login", handlerLogin)
+	cmds.register("register", handlerRegister)
 
 	if len(os.Args) < 2 {
 		fmt.Println("not enough arguments")
