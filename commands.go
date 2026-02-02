@@ -74,6 +74,15 @@ func handlerRegister(s *state, cmd command) error {
 	return nil
 }
 
+func handlerReset(s *state, cmd command) error {
+	err := s.db.Reset(context.Background())
+	if err != nil {
+		return fmt.Errorf("failed to reset database: %w", err)
+	}
+	fmt.Println("Database has been reset!")
+	return nil
+}
+
 func (c *commands) run(s *state, cmd command) error {
 	if cmd.name == "" {
 		return fmt.Errorf("no command name provided")
