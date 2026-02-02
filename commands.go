@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"database/sql"
+	"errors"
 	"fmt"
 	"time"
 
@@ -25,7 +26,7 @@ func handlerLogin(s *state, cmd command) error {
 	}
 	_, err := s.db.GetUser(context.Background(), cmd.args[0])
 	if err != nil {
-		if err == sql.ErrNoRows {
+		if errors.Is(err, sql.ErrNoRows) {
 			return fmt.Errorf("user does not exist")
 
 		} else {
@@ -55,7 +56,7 @@ func handlerRegister(s *state, cmd command) error {
 	}
 	user, err := s.db.GetUser(context.Background(), cmd.args[0])
 	if err != nil {
-		if err == sql.ErrNoRows {
+		if errors.Is(err, sql.ErrNoRows) {
 			user, err := s.db.CreateUser(context.Background(), createUserParams)
 			if err != nil {
 				return fmt.Errorf("failed to create user: %w", err)
@@ -75,6 +76,7 @@ func handlerRegister(s *state, cmd command) error {
 }
 
 func handlerReset(s *state, cmd command) error {
+	_ = cmd
 	err := s.db.Reset(context.Background())
 	if err != nil {
 		return fmt.Errorf("failed to reset database: %w", err)
@@ -84,6 +86,7 @@ func handlerReset(s *state, cmd command) error {
 }
 
 func handlerUsers(s *state, cmd command) error {
+	_ = cmd
 	users, err := s.db.GetUsers(context.Background())
 	if err != nil {
 		return fmt.Errorf("failed to get users: %w", err)
