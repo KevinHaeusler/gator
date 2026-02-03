@@ -25,6 +25,7 @@ func main() {
 		fmt.Println(err)
 		os.Exit(1)
 	}
+
 	defer func() {
 		_ = db.Close()
 	}()
@@ -43,6 +44,7 @@ func main() {
 	cmds.register("register", handlerRegister)
 	cmds.register("reset", handlerReset)
 	cmds.register("users", handlerUsers)
+	cmds.register("agg", handlerAgg)
 
 	if len(os.Args) < 2 {
 		fmt.Println("not enough arguments")

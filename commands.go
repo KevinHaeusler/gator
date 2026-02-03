@@ -101,6 +101,21 @@ func handlerUsers(s *state, cmd command) error {
 	return nil
 }
 
+func handlerAgg(s *state, cmd command) error {
+	_ = s
+	_ = cmd
+
+	url := "https://www.wagslane.dev/index.xml"
+
+	var feed RSSFeed
+	feed, err := fetchFeed(context.Background(), url)
+	if err != nil {
+		return fmt.Errorf("failed to fetch feed: %w", err)
+	}
+	fmt.Println(feed)
+	return nil
+}
+
 func (c *commands) run(s *state, cmd command) error {
 	if cmd.name == "" {
 		return fmt.Errorf("no command name provided")
