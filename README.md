@@ -65,6 +65,7 @@ A few commands you can try:
   ```bash
   gator browse 10
   ```
+  
 
 ## Troubleshooting
 
